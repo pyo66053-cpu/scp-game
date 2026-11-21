@@ -11,7 +11,8 @@ jobs:
           mkdir -p /github/home/.local/share/godot /github/home/.config/godot
           cp -r /root/.local/share/godot/export_templates /github/home/.local/share/godot/
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore /github/home/.local/share/godot/debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          printf 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"\nexport/android/android_sdk_path = "/usr/lib/android-sdk"\nexport/android/debug_keystore = "/github/home/.local/share/godot/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' > /github/home/.config/godot/editor_settings-4.3.tres
+          JPATH=$(dirname $(dirname $(readlink -f $(which java))))
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/java_sdk_path = "%s"\nexport/android/android_sdk_path = "/usr/lib/android-sdk"\nexport/android/debug_keystore = "/github/home/.local/share/godot/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' "$JPATH" > /github/home/.config/godot/editor_settings-4.3.tres
           cd scp-sml
           rm -f interior_maker.gd map_gen.gd
           printf '[preset.0]\nname="Android"\nplatform="Android"\nrunnable=true\nexport_filter="all_resources"\ninclude_filter=""\nexclude_filter=""\nexport_path="build/SCP_Breach.apk"\n\n[preset.0.options]\narchitectures/arm64-v8a=true\npermissions/internet=true\npermissions/access_network_state=true\n' > export_presets.cfg
